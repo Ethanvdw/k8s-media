@@ -20,8 +20,10 @@ sleep 5
 echo "🏗️ Creating namespace..."
 kubectl create namespace $NAMESPACE
 
-echo "📁 Creating persistent storage..."
-kubectl apply -f storage/pvc.yaml    # Remove -n $NAMESPACE since it's in the YAML
+# In deploy.sh, after creating namespace
+echo "📁 Creating base PVCs..."
+kubectl apply -f manifests/base/pvcs.yaml
+
 echo "⏳ Waiting for storage provisioning..."
 sleep 10
 

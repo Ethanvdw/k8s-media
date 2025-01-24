@@ -58,7 +58,7 @@ metadata:
 spec:
   storageClassName: local-path
   accessModes:
-    - ReadWriteOnce  # Changed from ReadWriteMany as local-path might not support RWX
+    - ReadWriteOnce
   resources:
     requests:
       storage: 1000Gi
