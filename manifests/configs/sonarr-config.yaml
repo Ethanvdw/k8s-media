@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sonarr-creds
+  namespace: media
+type: Opaque
+stringData:
+  api_key: generateRandomSonarrAPIKey123
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarr-config
+  namespace: media
+data:
+  config.xml: |
+    <Config>
+      <LogLevel>info</LogLevel>
+      <BindAddress>*</BindAddress>
+      <Port>8989</Port>
+      <UrlBase></UrlBase>
+      <ApiKey>${API_KEY}</ApiKey>
+      <AuthenticationMethod>None</AuthenticationMethod>
+      <UpdateMechanism>BuiltIn</UpdateMechanism>
+      <Branch>main</Branch>
+      <LaunchBrowser>False</LaunchBrowser>
+      <AnalyticsEnabled>False</AnalyticsEnabled>
+    </Config>

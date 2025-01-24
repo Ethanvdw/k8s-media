@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-config
+  namespace: media
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      containers:
+      - name: qbittorrent
+        image: linuxserver/qbittorrent:latest
+        ports:
+        - containerPort: 8080
+        - containerPort: 6881
+        - containerPort: 6881
+          protocol: UDP
+        env:
+        - name: WEBUI_PORT
+          value: "8080"
+        - name: QBITTORRENT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-creds
+              key: username
+        - name: QBITTORRENT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-creds
+              key: password
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: qbittorrent-config
+          mountPath: /config/qBittorrent/qBittorrent.conf
+          subPath: qBittorrent.conf
+        - name: media
+          mountPath: /downloads
+          subPath: downloads
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: qbittorrent-config
+      - name: qbittorrent-config
+        configMap:
+          name: qbittorrent-config
+      - name: media
+        persistentVolumeClaim:
+          claimName: media-storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent
+  namespace: media
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: webui
+  - port: 6881
+    targetPort: 6881
+    name: tcp
+  - port: 6881
+    targetPort: 6881
+    protocol: UDP
+    name: udp
+  selector:
+    app: qbittorrent

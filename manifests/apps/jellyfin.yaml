@@ -18,15 +18,27 @@ spec:
         image: jellyfin/jellyfin:latest
         ports:
         - containerPort: 8096
+        env:
+        - name: JELLYFIN_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: jellyfin-creds
+              key: admin_password
         volumeMounts:
         - name: config
           mountPath: /config
+        - name: jellyfin-config
+          mountPath: /config/system.xml
+          subPath: system.xml
         - name: media
           mountPath: /media
       volumes:
       - name: config
         persistentVolumeClaim:
           claimName: jellyfin-config
+      - name: jellyfin-config
+        configMap:
+          name: jellyfin-config
       - name: media
         persistentVolumeClaim:
           claimName: media-storage

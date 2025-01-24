@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: jellyfin-creds
+  namespace: media
+type: Opaque
+stringData:
+  admin_password: yourSecurePassword123
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jellyfin-config
+  namespace: media
+data:
+  system.xml: |
+    <?xml version="1.0" encoding="utf-8"?>
+    <ServerConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <EnableRemoteAccess>true</EnableRemoteAccess>
+      <EnableAutomaticPortMapping>false</EnableAutomaticPortMapping>
+      <PublicPort>8096</PublicPort>
+      <PublicHttpsPort>8920</PublicHttpsPort>
+      <HttpServerPortNumber>8096</HttpServerPortNumber>
+      <HttpsPortNumber>8920</HttpsPortNumber>
+      <EnableHttps>false</EnableHttps>
+      <EnableIPV6>false</EnableIPV6>
+      <EnableIPV4>true</EnableIPV4>
+      <LogFileRetentionDays>3</LogFileRetentionDays>
+      <IsStartupWizardCompleted>true</IsStartupWizardCompleted>
+    </ServerConfiguration>

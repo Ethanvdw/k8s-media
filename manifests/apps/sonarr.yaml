@@ -18,9 +18,18 @@ spec:
         image: linuxserver/sonarr:latest
         ports:
         - containerPort: 8989
+        env:
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sonarr-creds
+              key: api_key
         volumeMounts:
         - name: config
           mountPath: /config
+        - name: sonarr-config
+          mountPath: /config/config.xml
+          subPath: config.xml
         - name: media
           mountPath: /tv
           subPath: tv
@@ -31,6 +40,9 @@ spec:
       - name: config
         persistentVolumeClaim:
           claimName: sonarr-config
+      - name: sonarr-config
+        configMap:
+          name: sonarr-config
       - name: media
         persistentVolumeClaim:
           claimName: media-storage

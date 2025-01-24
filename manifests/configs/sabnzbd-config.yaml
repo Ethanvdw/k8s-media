@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sabnzbd-creds
+  namespace: media
+type: Opaque
+stringData:
+  api_key: generateRandomAPIKey123
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sabnzbd-config
+  namespace: media
+data:
+  sabnzbd.ini: |
+    [misc]
+    host = 0.0.0.0
+    port = 8080
+    download_dir = /downloads/usenet
+    complete_dir = /downloads/completed
+    api_key = ${API_KEY}
+    host_whitelist = sabnzbd, media

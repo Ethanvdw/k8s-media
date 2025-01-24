@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: radarr-creds
+  namespace: media
+type: Opaque
+stringData:
+  api_key: generateRandomRadarrAPIKey123
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: radarr-config
+  namespace: media
+data:
+  config.xml: |
+    <Config>
+      <LogLevel>info</LogLevel>
+      <BindAddress>*</BindAddress>
+      <Port>7878</Port>
+      <UrlBase></UrlBase>
+      <ApiKey>${API_KEY}</ApiKey>
+      <AuthenticationMethod>None</AuthenticationMethod>
+      <UpdateMechanism>BuiltIn</UpdateMechanism>
+      <Branch>main</Branch>
+      <LaunchBrowser>False</LaunchBrowser>
+      <AnalyticsEnabled>False</AnalyticsEnabled>
+    </Config>
