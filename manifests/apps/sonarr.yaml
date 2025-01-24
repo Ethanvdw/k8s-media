@@ -23,6 +23,10 @@ spec:
           mountPath: /config
         - name: media
           mountPath: /tv
+          subPath: tv
+        - name: media
+          mountPath: /downloads
+          subPath: downloads
       volumes:
       - name: config
         persistentVolumeClaim:

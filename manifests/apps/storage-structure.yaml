@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-init
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: storage-init
+  template:
+    metadata:
+      labels:
+        app: storage-init
+    spec:
+      containers:
+      - name: storage-init
+        image: busybox
+        command: ["/bin/sh", "-c"]
+        args:
+          - mkdir -p /media/movies /media/tv /media/downloads/completed /media/downloads/incomplete /media/downloads/usenet;
+            chmod -R 777 /media;
+            sleep infinity
+        volumeMounts:
+        - name: media
+          mountPath: /media
+      volumes:
+      - name: media
+        persistentVolumeClaim:
+          claimName: media-storage
